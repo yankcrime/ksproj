@@ -1,0 +1,69 @@
+[DEFAULT]
+
+#
+# From ksproj
+#
+
+# Database connection string (string value)
+#database = sqlite://
+
+# Name for admin role. This role will be required for users who want
+# to invite other users to their project. (string value)
+#admin_role_name = project_admin
+
+# Name for member role. This role will be assigned to users when they
+# accept a project invitation. (string value)
+#member_role_name = _member_
+
+
+[auth]
+
+#
+# From ksproj
+#
+
+# Identity endpoint. (v3) (string value)
+#auth_url = http://localhost/identity/v3
+
+# Username for admin user. (string value)
+#username = admin
+
+# Domain name for admin user. (string value)
+#user_domain_name = Default
+
+# Domain ID for admin user. (string value)
+#user_domain_id = <None>
+
+# User ID for admin user. (string value)
+#user_id = <None>
+
+# Password for admin user. (string value)
+#password = <None>
+
+# Admin project name. (string value)
+#project_name = admin
+
+# Domain name for admin project. (string value)
+#project_domain_name = Default
+
+# Domain ID for admin project. (string value)
+#project_domain_id = <None>
+
+# ID of the admin project (string value)
+#project_id = <None>
+
+
+[email]
+
+#
+# From ksproj
+#
+
+# SMTP Server to send emails (string value)
+#smtp = http://localhost
+
+# Author to send emails (string value)
+#author =
+
+# Password for author user (string value)
+#password =
