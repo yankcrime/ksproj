@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>MOC Project Management</title>
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    
+    <style>
+        table.project-table {
+            margin-top: 2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-4">Mass Open Cloud</h1>
+        <hr />
+
+        <div class="row">
+            <div class="col-3">
+                <div class="card">
+                    <div class="card-body">
+                        <p>User: knikolla</p>
+                        <button>Sign Out</button>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Projects</h2>
+                        <ul>
+                            <li>Project1</li>
+                            <li>Project2</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-9">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Project: project1</h2>
+
+                        <table class="table table-bordered project-table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>Kristi Nikolla</td>
+                                <td>knikolla@bu.edu</td>
+                                <td>Project Admin</td>
+                                <td class="right-align"></td>
+                            </tr>
+                            <tr>
+                                <td>test</td>
+                                <td>test@test.com</td>
+                                <td>Invitation sent</td>
+                                <td class="right-align"><button class="btn btn-danger">Cancel</button></td>
+                            </tr>
+                        </table>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h3>Invite User</h3>
+                                <p>To add people to the project, you can send them an email invitation.</p>
+                                <form>
+                                    <label for="email">Email: </label>
+                                    <input id="email" type="text" />
+                                    <button type="submit">Send</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

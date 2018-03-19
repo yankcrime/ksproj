@@ -24,6 +24,11 @@ from ksproj import exceptions
 from ksproj import manager
 
 
+@app.route('/projects/<project>', methods=['GET', 'POST'])
+def project_ui(project):
+    pass
+
+
 @app.route('/invitations/<token>', methods=['GET', 'POST'])
 def accept_ui(token):
         return flask.render_template('accept.html',
