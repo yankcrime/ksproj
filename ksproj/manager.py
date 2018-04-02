@@ -104,3 +104,10 @@ class Manager(object):
                                               user=self.user['id'],
                                               role=member_role['id'])
         i.set_accepted(self.user['id'])
+
+    def list_users(self, project):
+        project = self.get_project(project, validate=False)
+        return identity.client().get_users_in_project(project['id'])
+
+    def list_projects(self):
+        return identity.client().get_projects_for_user(self.user['id'])

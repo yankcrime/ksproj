@@ -37,6 +37,32 @@ default_opts = [
 ]
 CONF.register_opts(default_opts)
 
+oidc_group = cfg.OptGroup(name='oidc',
+                          title='OpenID Connect Auth Group')
+oidc_opts = [
+    cfg.StrOpt('authorization_endpoint',
+               default='https://sso.massopen.cloud/auth/realms/moc/protocol/openid-connect/auth',
+               help='OAuth 2.0 Authorize Endpoint.'),
+
+    cfg.StrOpt('token_endpoint',
+               default='https://sso.massopen.cloud/auth/realms/moc/protocol/openid-connect/token',
+               help='OAuth 2.0 Authorize Endpoint.'),
+
+    cfg.StrOpt('logout_endpoint',
+               default='https://sso.massopen.cloud/auth/realms/moc/protocol/openid-connect/logout',
+               help='OAuth 2.0 End Session Endpoint'),
+
+    cfg.StrOpt('client_id',
+               default='',
+               help='OAuth 2.0 Client ID.'),
+
+    cfg.StrOpt('client_secret',
+               default='',
+               help='OAuth 2.0 Client Secret.'),
+]
+CONF.register_group(oidc_group)
+CONF.register_opts(oidc_opts, oidc_group)
+
 auth_group = cfg.OptGroup(name='auth',
                           title='Auth Config Group')
 auth_opts = [
@@ -53,15 +79,15 @@ auth_opts = [
                help='Domain name for admin user.'),
 
     cfg.StrOpt('user_domain_id',
-               default=None,
+               default='',
                help='Domain ID for admin user.'),
 
     cfg.StrOpt('user_id',
-               default=None,
+               default='',
                help='User ID for admin user.'),
 
     cfg.StrOpt('password',
-               default=None,
+               default='',
                help='Password for admin user.'),
 
     cfg.StrOpt('project_name',
@@ -73,11 +99,11 @@ auth_opts = [
                help='Domain name for admin project.'),
 
     cfg.StrOpt('project_domain_id',
-               default=None,
+               default='',
                help='Domain ID for admin project.'),
 
     cfg.StrOpt('project_id',
-               default=None,
+               default='',
                help='ID of the admin project')
 ]
 CONF.register_group(auth_group)

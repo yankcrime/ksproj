@@ -24,11 +24,6 @@ from ksproj import exceptions
 from ksproj import manager
 
 
-@app.route('/projects/<project>', methods=['GET', 'POST'])
-def project_ui(project):
-    pass
-
-
 @app.route('/invitations/<token>', methods=['GET', 'POST'])
 def accept_ui(token):
         return flask.render_template('accept.html',
@@ -135,6 +130,24 @@ def delete_inviation(project, email):
         m = manager.Manager(flask.request.headers.get('x-auth-token', None))
         m.delete_invitation(project, email)
         return '', 204
+    except exceptions.InternalException as e:
+        return e.MESSAGE, e.STATUS_CODE
+
+
+@app.route('/api/projects/<project>/users', methods=['GET'])
+def list_users(project):
+    try:
+        m = manager.Manager(flask.request.headers.get('x-auth-token', None))
+        return json.dumps({'users': m.list_users(project)})
+    except exceptions.InternalException as e:
+        return e.MESSAGE, e.STATUS_CODE
+
+
+@app.route('/api/projects', methods=['GET'])
+def list_projects():
+    try:
+        m = manager.Manager(flask.request.headers.get('x-auth-token', None))
+        return json.dumps({'projects': m.list_projects()})
     except exceptions.InternalException as e:
         return e.MESSAGE, e.STATUS_CODE
 

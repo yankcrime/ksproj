@@ -12,26 +12,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+FROM alpine:3.7
 
-class OIDCAuthenticationException(Exception):
-    pass
+EXPOSE 9999
+WORKDIR /usr/src/app
 
+RUN apk add --no-cache \
+        python3 \
+        uwsgi \
+        uwsgi-python3
 
-class InternalException(Exception):
-    STATUS_CODE = None
-    MESSAGE = None
+COPY . .
 
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-class Forbidden(InternalException):
-    STATUS_CODE = 403
-    MESSAGE = 'Unauthorized to perform the requested action.'
-
-
-class NotFound(InternalException):
-    STATUS_CODE = 404
-    MESSAGE = 'Not Found.'
-
-
-class DuplicateError(InternalException):
-    STATUS_CODE = 400
-    MESSAGE = 'Invitation already exists for project and user.'
+CMD [ "uwsgi", "--socket", "0.0.0.0:9999", \
+               "--plugins", "python3", \
+               "--protocol", "uwsgi", \
+               "--wsgi", "ksproj.api:application" ]

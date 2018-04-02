@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 from keystoneauth1 import exceptions as ks_esceptions
 from keystoneauth1 import identity as ks_identity
 from keystoneauth1 import session as ks_session
@@ -30,7 +32,7 @@ _IDENTITY = None
 def client():
     global _IDENTITY
     if not _IDENTITY:
-        _IDENTITY = Identity()
+        _IDENTITY = AdminIdentity()
     return _IDENTITY
 
 
@@ -38,7 +40,7 @@ class Forbidden(Exception):
     pass
 
 
-class Identity(object):
+class AdminIdentity(object):
     def __init__(self):
         self.session = self._get_session()
         self.identity = ks_client.Client(session=self.session)
@@ -100,9 +102,85 @@ class Identity(object):
         roles = self.identity.role_assignments.list(project=project,
                                                     user=user,
                                                     include_names=True)
-        return [{'name': r.role['name'], 'id': r.role['id']} for r in roles]
+        return [
+            {'name': r.role['name'],
+             'id': r.role['id'],
+             'project': r.scope('project'),
+             'user': r.user} for r in roles if (
+                    hasattr(r, 'user') and r.scope.get('project', False)
+            )
+        ]
+
+    def get_users_in_project(self, project):
+        roles = self.get_roles(project=project)
+        return list(
+            {role['user']['id']: role['user'] for role in roles}.items()
+        )
+
+    def get_projects_for_user(self, user):
+        roles = self.get_roles(user=user)
+        return list(
+            {r.scope['project']['id']: r.scope['project'] for r in roles}.items()
+        )
 
     def add_user_to_project(self, project, user, role):
         self.identity.roles.grant(project=project,
                                   user=user,
                                   role=role)
+
+
+class UserIdentity(object):
+    @classmethod
+    def from_access_token(cls, access_token):
+        auth = ks_identity.v3.OidcAccessToken(
+            auth_url=CONF.auth.auth_url,
+            access_token=access_token,
+            identity_provider='moc',
+            protocol='openid'
+        )
+        session = ks_session.Session(auth)
+        return UserIdentity(session=session)
+
+    @classmethod
+    def from_token(cls, user_token):
+        auth = ks_identity.v3.Token(
+            auth_url=CONF.auth.auth_url,
+            token=user_token
+        )
+        session = ks_session.Session(auth)
+        return UserIdentity(session=session)
+
+    def __init__(self, session=None, token=None, project=None):
+        if not session:
+            auth = ks_identity.v3.Token(
+                auth_url=CONF.auth.auth_url,
+                token=token,
+                project_id=project
+            )
+            session = ks_session.Session(auth)
+        elif not token:
+            raise ValueError
+
+        self.session = session
+
+    @property
+    def is_admin(self):
+        return 'admin' in self.get_roles()
+
+    @property
+    def is_project_admin(self):
+        return 'project_admin' is self.get_roles()
+
+    @property
+    def project(self):
+        return self.session.get_project_id()
+
+    @property
+    def roles(self):
+        return self.session.auth.auth_ref.role_names
+
+    @property
+    def projects(self):
+        projects = self.session.get('%s/auth/projects' % self.session.auth.auth_url)
+        projects = json.loads(projects.text)['projects']
+        return projects
