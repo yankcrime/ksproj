@@ -102,14 +102,9 @@ class AdminIdentity(object):
         roles = self.identity.role_assignments.list(project=project,
                                                     user=user,
                                                     include_names=True)
-        return [
-            {'name': r.role['name'],
-             'id': r.role['id'],
-             'project': r.scope('project'),
-             'user': r.user} for r in roles if (
-                    hasattr(r, 'user') and r.scope.get('project', False)
-            )
-        ]
+        return [{'name': r.role['name'],
+                 'id': r.role['id'],
+                 'user': r.user} for r in roles if (hasattr(r, 'user'))]
 
     def get_users_in_project(self, project):
         roles = self.get_roles(project=project)
@@ -117,16 +112,15 @@ class AdminIdentity(object):
             {role['user']['id']: role['user'] for role in roles}.items()
         )
 
-    def get_projects_for_user(self, user):
-        roles = self.get_roles(user=user)
-        return list(
-            {r.scope['project']['id']: r.scope['project'] for r in roles}.items()
-        )
-
     def add_user_to_project(self, project, user, role):
         self.identity.roles.grant(project=project,
                                   user=user,
                                   role=role)
+
+    def remove_user_from_project(self, project, user, role):
+        self.identity.roles.revoke(project=project,
+                                   user=user,
+                                   role=role)
 
 
 class UserIdentity(object):
@@ -165,15 +159,21 @@ class UserIdentity(object):
 
     @property
     def is_admin(self):
-        return 'admin' in self.get_roles()
+        return 'admin' in self.roles
 
     @property
     def is_project_admin(self):
-        return 'project_admin' is self.get_roles()
+        return 'project_admin' is self.roles
 
     @property
     def project(self):
-        return self.session.get_project_id()
+        project_id = self.session.get_project_id()
+        return client().get_project(project_id)
+
+    @property
+    def user(self):
+        user_id = self.session.get_user_id()
+        return client().get_user(user_id)
 
     @property
     def roles(self):
