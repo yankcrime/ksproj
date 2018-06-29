@@ -19,8 +19,12 @@ WORKDIR /usr/src/app
 
 RUN apk add --no-cache \
         python3 \
+        python3-dev \
         uwsgi \
-        uwsgi-python3
+        uwsgi-python3 \
+        musl-dev \
+        linux-headers \
+        gcc
 
 COPY . .
 
